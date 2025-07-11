@@ -33,6 +33,16 @@
             </svg>
             Billing
           </button>
+          <button v-if="isAdmin" class="dropdown-item" @click="goToUserManagement">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-users">
+              <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+              <path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" />
+              <path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+              <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+              <path d="M21 21v-2a4 4 0 0 0 -3 -3.85" />
+            </svg>
+            User Management
+          </button>
           <button class="dropdown-item logout-button" @click="handleLogout">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-door-exit">
               <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
@@ -50,12 +60,16 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useAuth } from '../composables/useAuth'
+import { useRouter } from 'vue-router'
 import Logo from './Logo.vue'
 
 const { user, logout } = useAuth()
+const router = useRouter()
 const showDropdown = ref(false)
+
+const isAdmin = computed(() => user.value?.role === 'admin')
 
 const toggleDropdown = () => {
   showDropdown.value = !showDropdown.value
@@ -77,6 +91,11 @@ const goToBilling = () => {
   showDropdown.value = false
   // TODO: Navigate to billing
   console.log('Navigate to billing')
+}
+
+const goToUserManagement = () => {
+  showDropdown.value = false
+  router.push('/users')
 }
 
 const handleLogout = () => {
