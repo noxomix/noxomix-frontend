@@ -42,12 +42,14 @@ interface Server {
   name: string
   status: string
   cpu: number
+  ram: string
+  storage: string
 }
 
 const servers = ref<Server[]>([
-  { id: 1, name: 'Server 1', status: 'Online', cpu: 45 },
-  { id: 2, name: 'Server 2', status: 'Online', cpu: 23 },
-  { id: 3, name: 'Server 3', status: 'Offline', cpu: 0 },
+  { id: 1, name: 'test.mc-lite.com', status: 'Online', cpu: 45, ram: '1024MB', storage: '4GB' },
+  { id: 2, name: 'dev.mc-lite.com', status: 'Online', cpu: 23, ram: '2GB', storage: '8GB' },
+  { id: 3, name: 'staging.mc-lite.com', status: 'Offline', cpu: 0, ram: '512MB', storage: '2GB' },
 ])
 
 const handleServerClick = (server?: Server) => {
