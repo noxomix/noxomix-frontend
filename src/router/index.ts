@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import { useAuth } from '../composables/useAuth'
 import LoginForm from '../components/LoginForm.vue'
 import AppLayout from '../components/AppLayout.vue'
-import Dashboard from '../components/Dashboard.vue'
+import Servers from '../components/Servers.vue'
 import ServerManage from '../components/ServerManage.vue'
 
 const routes = [
@@ -24,7 +24,7 @@ const routes = [
       {
         path: 'servers',
         name: 'Servers',
-        component: Dashboard
+        component: Servers
       },
       {
         path: 'server/:id/manage',
