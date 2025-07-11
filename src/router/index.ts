@@ -1,13 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuth } from '../composables/useAuth'
 import LoginForm from '../components/LoginForm.vue'
+import AppLayout from '../components/AppLayout.vue'
 import Dashboard from '../components/Dashboard.vue'
+import ServerManage from '../components/ServerManage.vue'
 
 const routes = [
-  {
-    path: '/',
-    redirect: '/servers'
-  },
   {
     path: '/login',
     name: 'Login',
@@ -15,10 +13,25 @@ const routes = [
     meta: { requiresGuest: true }
   },
   {
-    path: '/servers',
-    name: 'Servers',
-    component: Dashboard,
-    meta: { requiresAuth: true }
+    path: '/',
+    component: AppLayout,
+    meta: { requiresAuth: true },
+    children: [
+      {
+        path: '',
+        redirect: '/servers'
+      },
+      {
+        path: 'servers',
+        name: 'Servers',
+        component: Dashboard
+      },
+      {
+        path: 'server/:id/manage',
+        name: 'ServerManage',
+        component: ServerManage
+      }
+    ]
   }
 ]
 

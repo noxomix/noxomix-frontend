@@ -1,7 +1,5 @@
 <template>
   <div class="dashboard">
-    <HeaderBar />
-    
     <div class="main-content">
       <h2>
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-server-bolt">
@@ -16,26 +14,41 @@
       </h2>
       
       <div class="servers-container">
-        <ServerCard 
-          v-for="server in servers" 
-          :key="server.id" 
-          :server="server"
-          @click="handleServerClick"
-        />
+        <template v-if="loading">
+          <ServerCardSkeleton v-for="n in 4" :key="`skeleton-${n}`" />
+          <ServerCard 
+            :is-add-card="true"
+            @add-server="handleAddServer"
+          />
+        </template>
         
-        <ServerCard 
-          :is-add-card="true"
-          @add-server="handleAddServer"
-        />
+        <div v-else-if="error" class="error-state">
+          {{ error }}
+        </div>
+        
+        <template v-else>
+          <ServerCard 
+            v-for="server in servers" 
+            :key="server.id" 
+            :server="server"
+            @click="handleServerClick"
+          />
+          
+          <ServerCard 
+            :is-add-card="true"
+            @add-server="handleAddServer"
+          />
+        </template>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import HeaderBar from './HeaderBar.vue'
+import { ref, onMounted } from 'vue'
 import ServerCard from './ServerCard.vue'
+import ServerCardSkeleton from './ServerCardSkeleton.vue'
+import { useAuth } from '../composables/useAuth'
 
 interface Server {
   id: number
@@ -46,11 +59,33 @@ interface Server {
   storage: string
 }
 
-const servers = ref<Server[]>([
-  { id: 1, name: 'test.mc-lite.com', status: 'Online', cpu: 45, ram: '1024MB', storage: '4GB' },
-  { id: 2, name: 'dev.mc-lite.com', status: 'Online', cpu: 23, ram: '2GB', storage: '8GB' },
-  { id: 3, name: 'staging.mc-lite.com', status: 'Offline', cpu: 0, ram: '512MB', storage: '2GB' },
-])
+const servers = ref<Server[]>([])
+const loading = ref(true)
+const error = ref('')
+
+const { apiCall } = useAuth()
+
+const loadServers = async () => {
+  try {
+    loading.value = true
+    error.value = ''
+    
+    const [response] = await Promise.all([
+      apiCall('/api/servers'),
+      new Promise(resolve => setTimeout(resolve, 3000))
+    ])
+    servers.value = response.servers
+  } catch (err) {
+    console.error('Failed to load servers:', err)
+    error.value = 'Failed to load servers'
+  } finally {
+    loading.value = false
+  }
+}
+
+onMounted(() => {
+  loadServers()
+})
 
 const handleServerClick = (server?: Server) => {
   console.log('Server clicked:', server)
@@ -63,7 +98,6 @@ const handleAddServer = () => {
 
 <style scoped>
 .dashboard {
-  min-height: 100vh;
 }
 
 .main-content {
@@ -86,6 +120,14 @@ const handleAddServer = () => {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
+}
+
+.error-state {
+  text-align: center;
+  padding: 2rem;
+  color: #ef4444;
+  font-style: italic;
+  width: 100%;
 }
 
 @media (max-width: 768px) {
