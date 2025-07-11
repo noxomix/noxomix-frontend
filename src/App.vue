@@ -1,10 +1,8 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
 import { useAuth } from './composables/useAuth'
-import LoginForm from './components/LoginForm.vue'
-import ServerPanel from './components/ServerPanel.vue'
 
-const { isAuthenticated, getCurrentUser } = useAuth()
+const { getCurrentUser } = useAuth()
 
 onMounted(() => {
   getCurrentUser()
@@ -13,8 +11,7 @@ onMounted(() => {
 
 <template>
   <div class="app">
-    <LoginForm v-if="!isAuthenticated" />
-    <ServerPanel v-else />
+    <router-view />
   </div>
 </template>
 

@@ -56,6 +56,9 @@ button {
   padding: 0.75rem 1.5rem;
   width: 100%;
   box-sizing: border-box;
+  border: 1px solid #ccc;
+  background-color: #e9e9ed;
+  cursor: pointer;
 }
 
 .server-panel {

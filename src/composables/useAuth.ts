@@ -1,5 +1,6 @@
 import { ref, computed } from 'vue'
 import { useLocalStorage } from '@vueuse/core'
+import { useRouter } from 'vue-router'
 
 const API_BASE = 'http://localhost:3000'
 
@@ -21,6 +22,7 @@ const token = useLocalStorage<string | null>('auth_token', null)
 const user = ref<User | null>(null)
 
 export function useAuth() {
+  const router = useRouter()
   const isAuthenticated = computed(() => !!token.value && !!user.value)
   const isAdmin = computed(() => user.value?.role === 'admin')
 
@@ -43,6 +45,7 @@ export function useAuth() {
       token.value = data.token
       user.value = data.user
       
+      router.push('/servers')
       return { success: true }
     } catch (error) {
       return { 
@@ -83,6 +86,7 @@ export function useAuth() {
   const logout = () => {
     token.value = null
     user.value = null
+    router.push('/login')
   }
 
   const getCurrentUser = async () => {
