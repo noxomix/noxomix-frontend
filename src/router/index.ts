@@ -5,6 +5,7 @@ import AppLayout from '../components/AppLayout.vue'
 import Servers from '../components/Servers.vue'
 import ServerManage from '../components/ServerManage.vue'
 import UserManagement from '../components/UserManagement.vue'
+import ServerCreate from '../components/ServerCreate.vue'
 
 const routes = [
   {
@@ -26,6 +27,11 @@ const routes = [
         path: 'servers',
         name: 'Servers',
         component: Servers
+      },
+      {
+        path: 'servers/create',
+        name: 'ServerCreate',
+        component: ServerCreate
       },
       {
         path: 'server/:id/manage',

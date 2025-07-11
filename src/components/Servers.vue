@@ -46,6 +46,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import ServerCard from './ServerCard.vue'
 import ServerCardSkeleton from './ServerCardSkeleton.vue'
 import { useAuth } from '../composables/useAuth'
@@ -64,6 +65,7 @@ const loading = ref(true)
 const error = ref('')
 
 const { apiCall } = useAuth()
+const router = useRouter()
 
 const loadServers = async () => {
   try {
@@ -92,7 +94,7 @@ const handleServerClick = (server?: Server) => {
 }
 
 const handleAddServer = () => {
-  console.log('Add server clicked')
+  router.push('/servers/create')
 }
 </script>
 
