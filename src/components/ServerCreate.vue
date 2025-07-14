@@ -1,15 +1,15 @@
 <template>
-  <div class="server-create">
-    <div class="main-content">
-      <div class="header">
-        <div class="header-content">
-          <router-link to="/servers" class="back-button">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-chevron-left">
+  <div>
+    <div class="p-8 max-w-6xl mx-auto md:p-4">
+      <div class="mb-8">
+        <div class="flex items-center gap-2">
+          <router-link to="/servers" class="flex items-center justify-center w-10 h-10 border-none bg-transparent no-underline text-inherit hover:bg-transparent transition-transform hover:-translate-x-0.5">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-chevron-left transition-transform duration-200">
               <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
               <path d="M15 6l-6 6l6 6" />
             </svg>
           </router-link>
-          <h2>
+          <h2 class="flex items-center gap-2 m-0">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-cube-plus">
               <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
               <path d="M21 12.5v-4.509a1.98 1.98 0 0 0 -1 -1.717l-7 -4.008a2.016 2.016 0 0 0 -2 0l-7 4.007c-.619 .355 -1 1.01 -1 1.718v8.018c0 .709 .381 1.363 1 1.717l7 4.008a2.016 2.016 0 0 0 2 0" />
@@ -24,57 +24,78 @@
         </div>
       </div>
 
-      <div class="create-form">
-        <fieldset class="form-section">
-          <legend>Server Configuration</legend>
+      <div>
+        <fieldset class="p-8 rounded bg-white">
+          <legend class="px-3 font-medium">Server Configuration</legend>
           
-          <div class="form-group">
-            <label for="hostname">Hostname</label>
-            <div class="hostname-input-group">
+          <div class="mb-8">
+            <label for="hostname" class="block mb-2 font-medium text-gray-700">Hostname</label>
+            <div class="relative">
               <input 
                 type="text" 
                 id="hostname"
                 v-model="hostname"
-                class="hostname-input"
+                class="w-full p-3 border border-gray-300 rounded outline-none text-sm pr-32 focus:border-green-500"
                 placeholder="myserver"
                 maxlength="32"
                 pattern="[a-z0-9-]+"
                 @input="validateHostname"
               />
-              <span class="hostname-suffix">.craftlite.de</span>
+              <span class="absolute right-3 top-3 text-sm text-gray-600 pointer-events-none">.craftlite.de</span>
             </div>
-            <div v-if="hostnameError" class="error-message">{{ hostnameError }}</div>
-            <div class="help-text">Only lowercase letters, numbers, and hyphens allowed. Must be unique.</div>
+            <div v-if="hostnameError" class="mt-2 text-red-500 text-sm">{{ hostnameError }}</div>
+            <div class="mt-2 text-gray-600 text-sm">Only lowercase letters, numbers, and hyphens allowed. Must be unique.</div>
           </div>
 
-          <div class="form-group">
-            <label>Server Type & Version</label>
-            <div class="server-types-container">
-              <div class="server-column">
+          <div class="mb-8">
+            <label class="block mb-2 font-medium text-gray-700">Server Type & Version</label>
+            <div class="flex gap-8 mt-2 flex-wrap">
+              <div class="flex flex-col gap-4 flex-1 min-w-[300px]">
                 <div 
                   v-for="serverType in serverTypes.slice(0, 3)" 
                   :key="serverType.id"
-                  class="server-type-card"
-                  :class="{ 'selected': selectedServerType === serverType.id }"
+                  class="relative p-6 border border-gray-300 rounded bg-white cursor-pointer transition-all hover:bg-gray-50 overflow-hidden"
+                  :class="{ 
+                    'border-green-500 bg-green-50': selectedServerType === serverType.id
+                  }"
                   @click="selectServerType(serverType.id)"
                 >
-                  <div class="card-content">
-                    <div class="server-type-icon">
-                      <img :src="serverType.icon" alt="" />
+                  <!-- Corner Triangle with Checkmark -->
+                  <div v-if="selectedServerType === serverType.id" class="absolute top-0 right-0">
+                    <div class="relative">
+                      <div class="absolute top-0 right-0 w-0 h-0 border-t-[32px] border-t-green-500 border-l-[32px] border-l-transparent"></div>
+                      <svg xmlns="http://www.w3.org/2000/svg" 
+                           class="absolute top-0.5 right-0.5 w-4 h-4 text-white z-10" 
+                           viewBox="0 0 24 24" 
+                           fill="none" 
+                           stroke="currentColor" 
+                           stroke-width="3" 
+                           stroke-linecap="round" 
+                           stroke-linejoin="round">
+                        <path d="M5 12l5 5L20 7"/>
+                      </svg>
                     </div>
-                    <div class="server-type-header">
-                      <h3>{{ serverType.name }}</h3>
-                      <div class="server-type-labels">
-                        <div class="server-type-label">{{ serverType.label }}</div>
-                        <div v-if="serverType.id === 'forge' || serverType.id === 'fabric'" class="server-type-pro-label">PRO</div>
+                  </div>
+                  <div class="text-center">
+                    <div class="mb-4">
+                      <img :src="serverType.icon" alt="" class="w-12 h-12 object-contain" />
+                    </div>
+                    <div class="text-center">
+                      <h3 class="m-0 mb-2 text-xl text-gray-700">{{ serverType.name }}</h3>
+                      <div class="flex justify-center gap-2 flex-wrap">
+                        <div class="inline-block px-3 py-1 bg-gray-200 text-gray-600 text-xs font-medium rounded-xl uppercase tracking-wide"
+                             :class="{ 'bg-green-500 text-white': selectedServerType === serverType.id }">
+                          {{ serverType.label }}
+                        </div>
+                        <div v-if="serverType.id === 'forge' || serverType.id === 'fabric'" class="inline-block px-3 py-1 bg-blue-500 text-white text-xs font-medium rounded-xl uppercase tracking-wide">PRO</div>
                       </div>
                     </div>
                     
-                    <div v-if="selectedServerType === serverType.id" class="version-select-container" @click.stop>
-                      <label class="version-label">Minecraft Version</label>
+                    <div v-if="selectedServerType === serverType.id" class="mt-4 pt-4" @click.stop>
+                      <label class="block mb-2 text-sm font-medium text-gray-700">Minecraft Version</label>
                       <select 
                         v-model="selectedMinecraftVersion"
-                        class="version-select"
+                        class="w-full p-2 border border-gray-300 rounded text-sm outline-none bg-white focus:border-green-500"
                         @click.stop
                       >
                         <option 
@@ -90,31 +111,52 @@
                 </div>
               </div>
               
-              <div class="server-column">
+              <div class="flex flex-col gap-4 flex-1 min-w-[300px]">
                 <div 
                   v-for="serverType in serverTypes.slice(3, 6)" 
                   :key="serverType.id"
-                  class="server-type-card"
-                  :class="{ 'selected': selectedServerType === serverType.id }"
+                  class="relative p-6 border border-gray-300 rounded bg-white cursor-pointer transition-all hover:bg-gray-50 overflow-hidden"
+                  :class="{ 
+                    'border-green-500 bg-green-50': selectedServerType === serverType.id
+                  }"
                   @click="selectServerType(serverType.id)"
                 >
-                  <div class="card-content">
-                    <div class="server-type-icon">
-                      <img :src="serverType.icon" alt="" />
+                  <!-- Corner Triangle with Checkmark -->
+                  <div v-if="selectedServerType === serverType.id" class="absolute top-0 right-0">
+                    <div class="relative">
+                      <div class="absolute top-0 right-0 w-0 h-0 border-t-[32px] border-t-green-500 border-l-[32px] border-l-transparent"></div>
+                      <svg xmlns="http://www.w3.org/2000/svg" 
+                           class="absolute top-0.5 right-0.5 w-4 h-4 text-white z-10" 
+                           viewBox="0 0 24 24" 
+                           fill="none" 
+                           stroke="currentColor" 
+                           stroke-width="3" 
+                           stroke-linecap="round" 
+                           stroke-linejoin="round">
+                        <path d="M5 12l5 5L20 7"/>
+                      </svg>
                     </div>
-                    <div class="server-type-header">
-                      <h3>{{ serverType.name }}</h3>
-                      <div class="server-type-labels">
-                        <div class="server-type-label">{{ serverType.label }}</div>
-                        <div v-if="serverType.id === 'forge' || serverType.id === 'fabric'" class="server-type-pro-label">PRO</div>
+                  </div>
+                  <div class="text-center">
+                    <div class="mb-4">
+                      <img :src="serverType.icon" alt="" class="w-12 h-12 object-contain" />
+                    </div>
+                    <div class="text-center">
+                      <h3 class="m-0 mb-2 text-xl text-gray-700">{{ serverType.name }}</h3>
+                      <div class="flex justify-center gap-2 flex-wrap">
+                        <div class="inline-block px-3 py-1 bg-gray-200 text-gray-600 text-xs font-medium rounded-xl uppercase tracking-wide"
+                             :class="{ 'bg-green-500 text-white': selectedServerType === serverType.id }">
+                          {{ serverType.label }}
+                        </div>
+                        <div v-if="serverType.id === 'forge' || serverType.id === 'fabric'" class="inline-block px-3 py-1 bg-blue-500 text-white text-xs font-medium rounded-xl uppercase tracking-wide">PRO</div>
                       </div>
                     </div>
                     
-                    <div v-if="selectedServerType === serverType.id" class="version-select-container" @click.stop>
-                      <label class="version-label">Minecraft Version</label>
+                    <div v-if="selectedServerType === serverType.id" class="mt-4 pt-4" @click.stop>
+                      <label class="block mb-2 text-sm font-medium text-gray-700">Minecraft Version</label>
                       <select 
                         v-model="selectedMinecraftVersion"
-                        class="version-select"
+                        class="w-full p-2 border border-gray-300 rounded text-sm outline-none bg-white focus:border-green-500"
                         @click.stop
                       >
                         <option 
@@ -133,36 +175,52 @@
           </div>
 
 
-          <div class="form-group">
-            <label>Server Resources</label>
-            <div class="resource-options">
+          <div class="mb-8">
+            <label class="block mb-2 font-medium text-gray-700">Server Resources</label>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-2">
               <div 
                 v-for="resource in resourceOptions" 
                 :key="resource.id"
-                class="resource-option"
+                class="relative p-6 border border-gray-300 rounded bg-white cursor-pointer transition-all hover:bg-gray-50 overflow-hidden"
                 :class="{ 
-                  'selected': selectedResource === resource.id,
-                  'disabled': resource.id === 'free' && isFreeDisabled
+                  'border-blue-500 bg-blue-50': selectedResource === resource.id,
+                  'opacity-50 cursor-not-allowed bg-gray-100': resource.id === 'free' && isFreeDisabled
                 }"
                 @click="resource.id === 'free' && isFreeDisabled ? null : selectResource(resource.id)"
               >
-                <div class="resource-header">
-                  <h4>{{ resource.name }}</h4>
-                  <span class="resource-price">
+                <!-- Corner Triangle with Checkmark -->
+                <div v-if="selectedResource === resource.id && !(resource.id === 'free' && isFreeDisabled)" class="absolute top-0 right-0">
+                  <div class="relative">
+                    <div class="absolute top-0 right-0 w-0 h-0 border-t-[32px] border-t-blue-500 border-l-[32px] border-l-transparent"></div>
+                    <svg xmlns="http://www.w3.org/2000/svg" 
+                         class="absolute top-0.5 right-0.5 w-4 h-4 text-white z-10" 
+                         viewBox="0 0 24 24" 
+                         fill="none" 
+                         stroke="currentColor" 
+                         stroke-width="3" 
+                         stroke-linecap="round" 
+                         stroke-linejoin="round">
+                      <path d="M5 12l5 5L20 7"/>
+                    </svg>
+                  </div>
+                </div>
+                <div class="flex justify-between items-center mb-4">
+                  <h4 class="m-0 text-gray-700 text-lg">{{ resource.name }}</h4>
+                  <span class="font-semibold text-blue-500 text-lg">
                     <template v-if="resource.price === 0">FREE</template>
                     <template v-else>€{{ resource.price.toFixed(2) }}/hour</template>
                   </span>
                 </div>
-                <div class="resource-specs">
-                  <div class="spec-item">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" class="icon">
+                <div class="flex flex-col gap-2">
+                  <div class="flex items-center gap-2 text-gray-600 text-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" class="flex-shrink-0 text-gray-400">
                       <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                       <path d="M18 3a3 3 0 0 1 2.995 2.824l.005 .176v12a3 3 0 0 1 -2.824 2.995l-.176 .005h-12a3 3 0 0 1 -2.995 -2.824l-.005 -.176v-12a3 3 0 0 1 2.824 -2.995l.176 -.005h12zm0 2h-12a1 1 0 0 0 -.993 .883l-.007 .117v9h14v-9a1 1 0 0 0 -.883 -.993l-.117 -.007z" />
                     </svg>
                     {{ resource.ram }}MB RAM
                   </div>
-                  <div class="spec-item">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                  <div class="flex items-center gap-2 text-gray-600 text-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0 text-gray-400">
                       <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                       <path d="M12 6m-8 0a8 3 0 1 0 16 0a8 3 0 1 0 -16 0" />
                       <path d="M4 6v6a8 3 0 0 0 16 0v-6" />
@@ -170,8 +228,8 @@
                     </svg>
                     {{ resource.storage }}GB Storage
                   </div>
-                  <div class="spec-item">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                  <div class="flex items-center gap-2 text-gray-600 text-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0 text-gray-400">
                       <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                       <path d="M5 5m0 1a1 1 0 0 1 1 -1h12a1 1 0 0 1 1 1v12a1 1 0 0 1 -1 1h-12a1 1 0 0 1 -1 -1z" />
                       <path d="M9 9h6v6h-6z" />
@@ -192,11 +250,11 @@
             </div>
           </div>
 
-          <div class="form-actions">
-            <router-link to="/servers" class="cancel-button">Cancel</router-link>
+          <div class="flex gap-4 justify-end mt-12 pt-8 border-t border-gray-200">
+            <router-link to="/servers" class="px-6 py-3 border border-gray-300 rounded bg-white text-gray-700 text-sm cursor-pointer transition-colors hover:bg-gray-100 no-underline">Cancel</router-link>
             <button 
               type="button" 
-              class="create-button"
+              class="px-6 py-3 border border-green-500 rounded bg-green-500 text-white text-sm cursor-pointer transition-colors hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed"
               :disabled="!canCreateServer"
               @click="createServer"
             >
@@ -424,444 +482,21 @@ const createServer = () => {
 </script>
 
 <style scoped>
-.server-create {
-}
+/* All styles converted to Tailwind CSS */
 
-.main-content {
-  padding: 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
-}
+/* Corner triangle styles handled by Tailwind border utilities */
 
-.header {
-  margin-bottom: 2rem;
-  border-bottom: none !important;
-}
-
-.header-content {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.header-content h2 {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin: 0;
-}
-
-.back-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  border: none;
-  background: transparent;
-  text-decoration: none;
-  color: inherit;
-}
-
-.back-button:hover {
-  background: transparent;
-}
-
-.back-button svg {
-  transition: transform 0.2s ease;
-}
-
-.back-button:hover svg {
-  transform: translateX(-2px);
-}
-
-.create-form {
-}
-
-.form-section {
-  padding: 2rem;
-  border-radius: 4px;
-  background: white;
-}
-
-.form-section legend {
-  padding: 0 0.7rem;
-  font-weight: 500;
-}
-
-.form-group {
-  margin-bottom: 2rem;
-}
-
-.form-group:last-child {
-  margin-bottom: 0;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-weight: 500;
-  color: #333;
-}
-
-.hostname-input-group {
-  position: relative;
-}
-
-.hostname-input {
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  outline: none;
-  font-size: 14px;
-  padding-right: 120px;
-}
-
-.hostname-input:focus {
-  border-color: #22c55e;
-}
-
-.hostname-suffix {
-  position: absolute;
-  right: 12px;
-  top: 0.75rem;
-  font-size: 14px;
-  color: #666;
-  pointer-events: none;
-}
-
-.error-message {
-  margin-top: 0.5rem;
-  color: #ef4444;
-  font-size: 14px;
-}
-
-.help-text {
-  margin-top: 0.5rem;
-  color: #666;
-  font-size: 14px;
-}
-
-.server-types-container {
-  display: flex;
-  gap: 2rem;
-  margin-top: 0.5rem;
-  flex-wrap: wrap;
-}
-
-.server-column {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  flex: 1;
-  min-width: 300px;
-}
-
-.server-type-card {
-  position: relative;
-  padding: 1.5rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  background: white;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.server-type-card:hover {
-  background: #f9f9f9;
-}
-
-.server-type-card.selected {
-  border-color: #22c55e;
-  background: #f0fdf4;
-}
-
-.server-type-card.selected::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 30px;
-  height: 30px;
-  background: #22c55e;
-  clip-path: polygon(100% 0%, 0% 0%, 100% 100%);
-}
-
-.server-type-card.selected::after {
-  content: '✓';
-  position: absolute;
-  top: 3px;
-  right: 5px;
-  color: white;
-  font-size: 12px;
-  font-weight: bold;
-  pointer-events: none;
-}
-
-.card-content {
-  text-align: center;
-}
-
-.server-type-icon {
-  margin-bottom: 1rem;
-}
-
-.server-type-icon img {
-  width: 48px;
-  height: 48px;
-  object-fit: contain;
-}
-
-
-.server-type-label {
-  display: inline-block;
-  padding: 0.25rem 0.75rem;
-  background: #f3f4f6;
-  color: #374151;
-  font-size: 12px;
-  font-weight: 500;
-  border-radius: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.server-type-card.selected .server-type-label {
-  background: #22c55e;
-  color: white;
-}
-
-.server-type-header {
-  text-align: center;
-}
-
-.server-type-header h3 {
-  margin: 0 0 0.5rem 0;
-  font-size: 1.25rem;
-  color: #333;
-}
-
-.server-type-labels {
-  display: flex;
-  justify-content: center;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-}
-
-.server-type-pro-label {
-  display: inline-block;
-  padding: 0.25rem 0.75rem;
-  background: #3b82f6;
-  color: white;
-  font-size: 12px;
-  font-weight: 500;
-  border-radius: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.version-select-container {
-  margin-top: 1rem;
-  padding-top: 1rem;
-}
-
-.version-label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-size: 14px;
-  font-weight: 500;
-  color: #333;
-}
-
-.version-select {
-  width: 100%;
-  padding: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 14px;
-  outline: none;
-  background: white;
-}
-
-.version-select:focus {
-  border-color: #22c55e;
-}
-
-
-.minecraft-version-select {
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 14px;
-  outline: none;
-  background: white;
-}
-
-.minecraft-version-select:focus {
-  border-color: #999;
-}
-
-.resource-options {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1rem;
-  margin-top: 0.5rem;
-}
-
-.resource-option {
-  position: relative;
-  padding: 1.5rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  background: white;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.resource-option:hover:not(.disabled) {
-  background: #f9f9f9;
-}
-
-.resource-option.disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  background: #f5f5f5;
-}
-
-.resource-option.selected {
-  border-color: #3b82f6;
-  background: #eff6ff;
-}
-
-.resource-option.selected::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 30px;
-  height: 30px;
-  background: #3b82f6;
-  clip-path: polygon(100% 0%, 0% 0%, 100% 100%);
-}
-
-.resource-option.selected::after {
-  content: '✓';
-  position: absolute;
-  top: 3px;
-  right: 5px;
-  color: white;
-  font-size: 12px;
-  font-weight: bold;
-  pointer-events: none;
-}
-
-.resource-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
-}
-
-.resource-header h4 {
-  margin: 0;
-  color: #333;
-  font-size: 1.125rem;
-}
-
-.resource-price {
-  font-weight: 600;
-  color: #3b82f6;
-  font-size: 1.125rem;
-}
-
-.resource-specs {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.spec-item {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: #666;
-  font-size: 14px;
-}
-
-.spec-item .icon {
-  flex-shrink: 0;
-  color: #999;
-}
-
-.form-actions {
-  display: flex;
-  gap: 1rem;
-  justify-content: flex-end;
-  margin-top: 3rem;
-  padding-top: 2rem;
-  border-top: 1px solid #e5e7eb;
-}
-
-.cancel-button {
-  padding: 0.75rem 1.5rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  background: white;
-  color: #333;
-  text-decoration: none;
-  font-size: 14px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.cancel-button:hover {
-  background: #f5f5f5;
-}
-
-.create-button {
-  padding: 0.75rem 1.5rem;
-  border: 1px solid #22c55e;
-  border-radius: 4px;
-  background: #22c55e;
-  color: white;
-  font-size: 14px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.create-button:hover:not(:disabled) {
-  background: #16a34a;
-}
-
-.create-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
+/* Mobile responsive adjustments */
 @media (max-width: 768px) {
-  .main-content {
-    padding: 1rem;
-  }
-  
-  .form-section {
-    padding: 1rem;
-  }
-  
-  .server-types {
+  .grid-cols-1.sm\:grid-cols-2.lg\:grid-cols-4 {
     grid-template-columns: 1fr;
   }
   
-  .resource-options {
-    grid-template-columns: 1fr;
-  }
-  
-  .form-actions {
+  .flex.gap-4.justify-end {
     flex-direction: column;
   }
   
-  .cancel-button,
-  .create-button {
+  .px-6.py-3 {
     width: 100%;
     text-align: center;
   }
