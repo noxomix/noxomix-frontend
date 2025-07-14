@@ -9,7 +9,7 @@
               <path d="M15 6l-6 6l6 6" />
             </svg>
           </router-link>
-          <h2 class="flex items-center gap-2 m-0">
+          <h2 class="flex items-center gap-2 m-0 text-2xl font-semibold">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-cube-plus">
               <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
               <path d="M21 12.5v-4.509a1.98 1.98 0 0 0 -1 -1.717l-7 -4.008a2.016 2.016 0 0 0 -2 0l-7 4.007c-.619 .355 -1 1.01 -1 1.718v8.018c0 .709 .381 1.363 1 1.717l7 4.008a2.016 2.016 0 0 0 2 0" />
@@ -31,15 +31,15 @@
           <div class="mb-8">
             <label for="hostname" class="block mb-2 font-medium text-gray-700">Hostname</label>
             <div class="relative">
-              <input 
-                type="text" 
+              <BaseInput 
                 id="hostname"
                 v-model="hostname"
-                class="w-full p-3 border border-gray-300 rounded outline-none text-sm pr-32 focus:border-green-500"
+                class="pr-32"
                 placeholder="myserver"
                 maxlength="32"
                 pattern="[a-z0-9-]+"
                 @input="validateHostname"
+                size="lg"
               />
               <span class="absolute right-3 top-3 text-sm text-gray-600 pointer-events-none">.craftlite.de</span>
             </div>
@@ -81,7 +81,7 @@
                       <img :src="serverType.icon" alt="" class="w-12 h-12 object-contain" />
                     </div>
                     <div class="text-center">
-                      <h3 class="m-0 mb-2 text-xl text-gray-700">{{ serverType.name }}</h3>
+                      <h3 class="m-0 mb-2 text-2xl text-gray-700">{{ serverType.name }}</h3>
                       <div class="flex justify-center gap-2 flex-wrap">
                         <div class="inline-block px-3 py-1 bg-gray-200 text-gray-600 text-xs font-medium rounded-xl uppercase tracking-wide"
                              :class="{ 'bg-green-500 text-white': selectedServerType === serverType.id }">
@@ -93,10 +93,10 @@
                     
                     <div v-if="selectedServerType === serverType.id" class="mt-4 pt-4" @click.stop>
                       <label class="block mb-2 text-sm font-medium text-gray-700">Minecraft Version</label>
-                      <select 
+                      <BaseSelect 
                         v-model="selectedMinecraftVersion"
-                        class="w-full p-2 border border-gray-300 rounded text-sm outline-none bg-white focus:border-green-500"
                         @click.stop
+                        size="md"
                       >
                         <option 
                           v-for="version in availableVersions" 
@@ -105,7 +105,7 @@
                         >
                           {{ version.name }}
                         </option>
-                      </select>
+                      </BaseSelect>
                     </div>
                   </div>
                 </div>
@@ -142,7 +142,7 @@
                       <img :src="serverType.icon" alt="" class="w-12 h-12 object-contain" />
                     </div>
                     <div class="text-center">
-                      <h3 class="m-0 mb-2 text-xl text-gray-700">{{ serverType.name }}</h3>
+                      <h3 class="m-0 mb-2 text-2xl text-gray-700">{{ serverType.name }}</h3>
                       <div class="flex justify-center gap-2 flex-wrap">
                         <div class="inline-block px-3 py-1 bg-gray-200 text-gray-600 text-xs font-medium rounded-xl uppercase tracking-wide"
                              :class="{ 'bg-green-500 text-white': selectedServerType === serverType.id }">
@@ -154,10 +154,10 @@
                     
                     <div v-if="selectedServerType === serverType.id" class="mt-4 pt-4" @click.stop>
                       <label class="block mb-2 text-sm font-medium text-gray-700">Minecraft Version</label>
-                      <select 
+                      <BaseSelect 
                         v-model="selectedMinecraftVersion"
-                        class="w-full p-2 border border-gray-300 rounded text-sm outline-none bg-white focus:border-green-500"
                         @click.stop
+                        size="md"
                       >
                         <option 
                           v-for="version in availableVersions" 
@@ -166,7 +166,7 @@
                         >
                           {{ version.name }}
                         </option>
-                      </select>
+                      </BaseSelect>
                     </div>
                   </div>
                 </div>
@@ -251,15 +251,15 @@
           </div>
 
           <div class="flex gap-4 justify-end mt-12 pt-8 border-t border-gray-200">
-            <router-link to="/servers" class="px-6 py-3 border border-gray-300 rounded bg-white text-gray-700 text-sm cursor-pointer transition-colors hover:bg-gray-100 no-underline">Cancel</router-link>
-            <button 
-              type="button" 
-              class="px-6 py-3 border border-green-500 rounded bg-green-500 text-white text-sm cursor-pointer transition-colors hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed"
+            <BaseButton to="/servers" size="lg">Cancel</BaseButton>
+            <BaseButton 
+              variant="success" 
+              size="lg"
               :disabled="!canCreateServer"
               @click="createServer"
             >
               Create Server
-            </button>
+            </BaseButton>
           </div>
         </fieldset>
       </div>
@@ -270,6 +270,9 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
+import BaseButton from './BaseButton.vue'
+import BaseSelect from './BaseSelect.vue'
+import BaseInput from './BaseInput.vue'
 
 interface ServerType {
   id: string
