@@ -1,7 +1,9 @@
 <template>
   <div class="login-container">
     <div class="login-form">
-      <h1>CheapSheep</h1>
+      <div class="logo-wrapper">
+        <Logo />
+      </div>
       
       <form @submit.prevent="handleSubmit">
         <fieldset :disabled="loading">
@@ -47,6 +49,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useAuth } from '../composables/useAuth'
+import Logo from './Logo.vue'
 
 const { login, register } = useAuth()
 
@@ -98,4 +101,17 @@ const handleRegister = async () => {
   registerLoading.value = false
 }
 </script>
+
+<style scoped>
+.logo-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+  font-size: 2rem;
+}
+
+.logo-wrapper :deep(.logo) {
+  font-size: 2.5rem;
+}
+</style>
 

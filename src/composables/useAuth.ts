@@ -2,7 +2,7 @@ import { ref, computed } from 'vue'
 import { useLocalStorage } from '@vueuse/core'
 import { useRouter } from 'vue-router'
 
-const API_BASE = 'http://localhost:3000'
+const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'
 
 interface User {
   id: number

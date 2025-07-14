@@ -349,14 +349,38 @@ const loadServer = async () => {
 const copyToClipboard = async () => {
   if (server.value?.name) {
     try {
-      await navigator.clipboard.writeText(server.value.name)
-      console.log('Domain copied to clipboard:', server.value.name)
-      
-      // Show checkmark for 1 second
-      showCheckmark.value = true
-      setTimeout(() => {
-        showCheckmark.value = false
-      }, 1000)
+      // Check if clipboard API is available
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(server.value.name)
+        console.log('Domain copied to clipboard:', server.value.name)
+        
+        // Show checkmark for 1 second
+        showCheckmark.value = true
+        setTimeout(() => {
+          showCheckmark.value = false
+        }, 1000)
+      } else {
+        // Fallback for HTTP or unsupported browsers
+        const textArea = document.createElement('textarea')
+        textArea.value = server.value.name
+        textArea.style.position = 'fixed'
+        textArea.style.left = '-999999px'
+        document.body.appendChild(textArea)
+        textArea.select()
+        try {
+          document.execCommand('copy')
+          console.log('Domain copied to clipboard (fallback):', server.value.name)
+          
+          // Show checkmark for 1 second
+          showCheckmark.value = true
+          setTimeout(() => {
+            showCheckmark.value = false
+          }, 1000)
+        } catch (err) {
+          console.error('Failed to copy to clipboard (fallback):', err)
+        }
+        document.body.removeChild(textArea)
+      }
     } catch (err) {
       console.error('Failed to copy to clipboard:', err)
     }
